@@ -105,6 +105,14 @@
     'WONK' 0;
 }
 /*
+ * Display type that fits its column (the Home hero's headline): display size, but no larger
+ * than lets the widest first line, "Your" plus the slot its longest changing word reserves
+ * (6.4em), fill 96% of the nearest `@container`.
+ */
+@utility type-display-fit {
+  font-size: min(var(--text-display), 15cqi);
+}
+/*
  * The brand name's original word on About, at display size in its own script's face. Bengali
  * stacks vowel signs above and below the letters, so it needs open leading (display's 0.95 would
  * clip them) and no negative tracking (it would collide conjuncts).
@@ -159,6 +167,15 @@
     'SOFT' 50,
     'WONK' 0;
   text-indent: -0.4em;
+}
+/*
+ * A keyword in running copy, findable at a glance in either theme: bold, in `accent-text`
+ * (marigold-ink on paper, sun on night; both A4 text pairs). Never underlined, so it doesn't
+ * read as a link.
+ */
+@utility keyword {
+  font-weight: 700;
+  color: var(--color-accent-text);
 }
 @utility type-lead {
   font-size: var(--text-lead);

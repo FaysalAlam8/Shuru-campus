@@ -9,7 +9,8 @@ describe('manifestoStatements', () => {
     const statements = manifestoStatements(defaultBrand.pillars);
     expect(statements.map((s) => s.pillar)).toEqual(defaultBrand.pillars);
     for (const { rest } of statements) {
-      expect(rest).toMatch(/^[a-z].*\.$/);
+      expect(rest.map((p) => p.text).join('')).toMatch(/^[a-z].*\.$/);
+      expect(rest.some((p) => p.strong)).toBe(true);
     }
   });
 
@@ -28,7 +29,7 @@ describe('manifestoStatements', () => {
 
 describe('pillarStatement', () => {
   it('finds a pillar’s statement whatever its case', () => {
-    expect(pillarStatement(' Enhance ')).toMatch(/^your work/);
+    expect(pillarStatement(' Enhance ')?.[0]?.text).toMatch(/^your work/);
   });
 
   it('has none for a pillar nobody has written one for', () => {

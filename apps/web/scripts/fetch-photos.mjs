@@ -67,19 +67,18 @@ const PLAN = /** @type {const} */ ([960, 1200]); // 4:5
 
 /** @type {Photo[]} */
 export const PHOTOS = [
-  // Home hero, art-directed: the same sunlit lounge family on both sizes.
+  // Home hero, art-directed: one photo, people at work around a shared table, at both sizes.
   {
     id: 'hero-wide',
     size: WIDE,
-    title: 'Communal coworking interior',
-    ...fromCommons('6/6a', 'Communal Coworking interior (Unsplash).jpg', 5501),
+    title: 'People at laptops at a shared table',
+    ...fromPexels(3184360),
   },
   {
     id: 'hero-tall',
     size: TALL,
-    title: 'Casual meeting room',
-    position: 'right',
-    ...fromCommons('0/0b', 'Casual Meeting Room (Unsplash).jpg', 6000),
+    title: 'People at laptops at a shared table',
+    ...fromPexels(3184360),
   },
   // About story, 3:2.
   {

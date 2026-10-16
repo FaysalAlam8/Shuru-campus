@@ -32,8 +32,9 @@ export interface HomeHeroProps {
 
 /**
  * Home #1 (docs/05-pages-and-interactions.md): the headline, where we are, the two ways in, and
- * the facts that matter first (open now, the starting price, the hours), then the photo.
- * A Server Component; only the open status hydrates.
+ * the facts that matter first (open now, the starting price, the hours), then the photo. From
+ * `lg` the photo moves to the right of all that, sized to the first screen, so the whole hero is
+ * in view at once. A Server Component; only the open status hydrates.
  */
 export function HomeHero({ hours, plans }: HomeHeroProps) {
   const from = plans ? cheapestRate(plans, 'hour') : undefined;
@@ -42,17 +43,13 @@ export function HomeHero({ hours, plans }: HomeHeroProps) {
   return (
     <section
       aria-labelledby="hero-title"
-      className="mx-auto max-w-content pt-8 px-page-safe pb-section sm:pt-12 lg:pt-16"
+      className="mx-auto max-w-content pt-8 px-page-safe pb-section sm:pt-12 lg:grid lg:grid-cols-12 lg:items-center lg:gap-gutter lg:pt-16"
     >
-      {/* From `xl` the headline's first line, sized for its longest word, leaves room beside it:
-          the lead, the ways in and the facts move up into it, level with the pause button. */}
-      <div className="xl:flex xl:items-end xl:gap-gutter">
-        <div className="xl:shrink-0">
-          <HeroHeadline id="hero-title" />
-        </div>
+      <div className="lg:col-span-7">
+        <HeroHeadline id="hero-title" />
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-gutter xl:mt-0 xl:ml-auto xl:flex xl:max-w-md xl:min-w-0 xl:flex-1 xl:flex-col xl:items-stretch xl:gap-8">
-          <div className="lg:col-span-7">
+        <div className="mt-8 flex flex-col gap-10 lg:mt-10 lg:gap-8">
+          <div>
             <p className="max-w-xl type-lead text-fg-muted">
               Shared workspace &amp; beyond, in the heart of Gulshan.
             </p>
@@ -72,7 +69,7 @@ export function HomeHero({ hours, plans }: HomeHeroProps) {
 
           <ul
             aria-label="At a glance"
-            className="flex flex-wrap gap-x-6 gap-y-3 text-small text-fg-muted lg:col-span-4 lg:col-start-9 lg:flex-col lg:justify-self-end xl:flex-row xl:border-t xl:border-border xl:pt-6"
+            className="flex max-w-xl flex-wrap gap-x-6 gap-y-3 text-small text-fg-muted lg:border-t lg:border-border lg:pt-6"
           >
             <li className="inline-flex">
               <OpenStatus hours={hours} />
@@ -109,7 +106,7 @@ export function HomeHero({ hours, plans }: HomeHeroProps) {
         </div>
       </div>
 
-      <HeroImage className="mt-12 lg:mt-16" />
+      <HeroImage className="mt-12 lg:col-span-5 lg:mt-0" />
     </section>
   );
 }
