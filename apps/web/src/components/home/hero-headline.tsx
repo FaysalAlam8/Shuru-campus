@@ -119,12 +119,13 @@ export function HeroHeadline({ id }: { id: string }) {
   return (
     // The pause button sits under the headline: beside it, it would float at the end of the
     // slot's reserved width, away from the word it controls.
-    <div className="flex flex-col items-start gap-4">
+    // A container, so the headline sizes to the column it's given (`type-display-fit`).
+    <div className="@container flex flex-col items-start gap-4">
       {/* 20ch: the display measure (B1). */}
       <h1
         ref={headingRef}
         id={id}
-        className="max-w-[20ch] type-display text-fg"
+        className="max-w-[20ch] type-display type-display-fit text-fg"
         onPointerEnter={(event) => {
           if (event.pointerType === 'mouse') setHovered(true);
         }}
