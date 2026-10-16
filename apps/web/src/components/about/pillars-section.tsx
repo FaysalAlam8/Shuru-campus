@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import { type Brand } from '@campus/contracts';
 
 import { Reveal } from '@/components/motion/reveal';
@@ -61,7 +63,16 @@ export function PillarsSection({ pillars, subTagline }: PillarsSectionProps) {
                   </h3>
                   {statement ? (
                     <p className="mt-4 max-w-prose text-pretty text-fg-muted">
-                      {pillar.trim()} {statement}
+                      {pillar.trim()}{' '}
+                      {statement.map(({ text, strong }, j) =>
+                        strong ? (
+                          <strong key={j} className="keyword">
+                            {text}
+                          </strong>
+                        ) : (
+                          <Fragment key={j}>{text}</Fragment>
+                        ),
+                      )}
                     </p>
                   ) : null}
                 </Reveal>

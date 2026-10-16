@@ -160,6 +160,15 @@
     'WONK' 0;
   text-indent: -0.4em;
 }
+/*
+ * A keyword in running copy, findable at a glance in either theme: bold, in `accent-text`
+ * (marigold-ink on paper, sun on night; both A4 text pairs). Never underlined, so it doesn't
+ * read as a link.
+ */
+@utility keyword {
+  font-weight: 700;
+  color: var(--color-accent-text);
+}
 @utility type-lead {
   font-size: var(--text-lead);
   line-height: var(--text-lead--line-height);

@@ -11,7 +11,7 @@ import {
   semanticHex,
   type Theme,
 } from '@/lib/color/contrast';
-import { scrollWords } from '@/lib/scroll-text';
+import { keywordParts, scrollWords } from '@/lib/scroll-text';
 import { scrollText } from '@/styles/motion';
 
 const sheet = parseTokenSheet(
@@ -31,8 +31,10 @@ function blend(fg: string, bg: string, alpha: number): string {
 
 describe('scrollWords', () => {
   const words = scrollWords([
-    { text: 'Empower', em: true },
-    { text: 'your business  with a head-start.' },
+    { text: 'Empower ', em: true },
+    { text: 'your business  with a ' },
+    { text: 'head-start', strong: true },
+    { text: '.' },
   ]);
 
   it('splits the statement into words, keeping the emphasis', () => {
@@ -44,7 +46,21 @@ describe('scrollWords', () => {
       'a',
       'head-start.',
     ]);
-    expect(words.map((w) => w.em)).toEqual([true, false, false, false, false, false]);
+    expect(words.map((w) => w.runs.some((r) => r.em))).toEqual([
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+    ]);
+  });
+
+  it('keeps a word whole when a keyword ends mid-word, styling each run', () => {
+    expect(words.at(-1)?.runs).toEqual([
+      { text: 'head-start', em: false, strong: true },
+      { text: '.', em: false, strong: false },
+    ]);
   });
 
   it('brightens the words in reading order, within the statement’s range', () => {
@@ -64,12 +80,33 @@ describe('scrollWords', () => {
 
   it('gives a single word the whole range', () => {
     expect(scrollWords([{ text: 'Enrich' }])).toEqual([
-      { word: 'Enrich', em: false, from: scrollText.start, to: scrollText.end },
+      {
+        word: 'Enrich',
+        runs: [{ text: 'Enrich', em: false, strong: false }],
+        from: scrollText.start,
+        to: scrollText.end,
+      },
     ]);
   });
 
   it('has nothing to brighten in an empty statement', () => {
     expect(scrollWords([{ text: '  ' }])).toEqual([]);
+  });
+});
+
+describe('keywordParts', () => {
+  it('marks the words between ** as keywords', () => {
+    expect(keywordParts('with a **head-start**: a **shared workspace**.')).toEqual([
+      { text: 'with a ' },
+      { text: 'head-start', strong: true },
+      { text: ': a ' },
+      { text: 'shared workspace', strong: true },
+      { text: '.' },
+    ]);
+  });
+
+  it('leaves copy without markup as it is', () => {
+    expect(keywordParts('your work.')).toEqual([{ text: 'your work.' }]);
   });
 });
 

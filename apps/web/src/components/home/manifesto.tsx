@@ -59,8 +59,8 @@ export function Manifesto({ pillars, subTagline }: ManifestoProps) {
           {statements.map(({ pillar, rest }) => (
             <ScrollText
               key={pillar}
-              parts={[{ text: pillar, em: true }, { text: rest }]}
-              className="type-h2 text-fg"
+              parts={[{ text: `${pillar} `, em: true, strong: true }, ...rest]}
+              className="type-h2 font-light text-fg"
             />
           ))}
         </div>

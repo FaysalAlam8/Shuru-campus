@@ -40,6 +40,13 @@ describe('Manifesto', () => {
     expect(words[9]?.style.getPropertyValue('--word-to')).toBe(`${scrollText.end}%`);
   });
 
+  it('sets only the pillar and the keywords bold', () => {
+    render(<Manifesto pillars={['Enhance']} />);
+    const statement = screen.getByText('Enhance', { selector: 'em' }).closest('p');
+    const bold = [...(statement?.querySelectorAll('strong') ?? [])].map((b) => b.textContent);
+    expect(bold).toEqual(['Enhance', 'professional', 'tranquil', 'buoyant']);
+  });
+
   it('only shows pillars it has a statement for', () => {
     render(<Manifesto pillars={['Focus', 'Enrich']} />);
     expect(screen.getByRole('heading', { level: 2 })).toHaveAccessibleName('Enrich');
