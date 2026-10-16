@@ -48,7 +48,7 @@ export default async function HomePage() {
     <>
       <JsonLd data={localBusinessJsonLd(site)} />
       <HomeHero hours={site.hours} plans={plans.ok ? plans.data : null} />
-      <Manifesto pillars={site.brand.pillars} />
+      <Manifesto pillars={site.brand.pillars} subTagline={site.brand.subTagline} />
       <SpacesSection plans={plans.ok ? plans.data : null} number={numbers.spaces} />
       {numbers.finder ? <PlanFinderSection plans={planList} number={numbers.finder} /> : null}
       <AmenitiesSection amenities={amenityList} number={numbers.amenities} />

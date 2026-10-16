@@ -44,63 +44,69 @@ export function HomeHero({ hours, plans }: HomeHeroProps) {
       aria-labelledby="hero-title"
       className="mx-auto max-w-content pt-8 px-page-safe pb-section sm:pt-12 lg:pt-16"
     >
-      <HeroHeadline id="hero-title" />
-
-      <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-gutter">
-        <div className="lg:col-span-7">
-          <p className="max-w-xl type-lead text-fg-muted">
-            Shared workspace &amp; beyond, in the heart of Gulshan.
-          </p>
-          {/* Full-width, thumb-sized buttons on phones; side by side from `sm`. */}
-          <div className="mt-8 grid gap-3 sm:flex sm:flex-wrap">
-            <NextLink href="/spaces" className={buttonClasses({ size: 'lg' })}>
-              Find your space
-            </NextLink>
-            <NextLink
-              href={BOOK_VISIT_HREF}
-              className={buttonClasses({ variant: 'secondary', size: 'lg' })}
-            >
-              Book a visit
-            </NextLink>
-          </div>
+      {/* From `xl` the headline's first line, sized for its longest word, leaves room beside it:
+          the lead, the ways in and the facts move up into it, level with the pause button. */}
+      <div className="xl:flex xl:items-end xl:gap-gutter">
+        <div className="xl:shrink-0">
+          <HeroHeadline id="hero-title" />
         </div>
 
-        <ul
-          aria-label="At a glance"
-          className="flex flex-wrap gap-x-6 gap-y-3 text-small text-fg-muted lg:col-span-4 lg:col-start-9 lg:flex-col lg:justify-self-end"
-        >
-          <li className="inline-flex">
-            <OpenStatus hours={hours} />
-          </li>
-          {from ? (
-            <Fact icon={<Tag aria-hidden="true" className={ICON} strokeWidth={1.5} />}>
-              <span aria-hidden="true">
-                From{' '}
-                <span className="text-fg lining-nums tabular-nums">
-                  <span className="currency-symbol">৳</span>
-                  {formatBdt(from.amountBdt).replace('৳', '')}
+        <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-gutter xl:mt-0 xl:ml-auto xl:flex xl:max-w-md xl:min-w-0 xl:flex-1 xl:flex-col xl:items-stretch xl:gap-8">
+          <div className="lg:col-span-7">
+            <p className="max-w-xl type-lead text-fg-muted">
+              Shared workspace &amp; beyond, in the heart of Gulshan.
+            </p>
+            {/* Full-width, thumb-sized buttons on phones; side by side from `sm`. */}
+            <div className="mt-8 grid gap-3 sm:flex sm:flex-wrap">
+              <NextLink href="/spaces" className={buttonClasses({ size: 'lg' })}>
+                Find your space
+              </NextLink>
+              <NextLink
+                href={BOOK_VISIT_HREF}
+                className={buttonClasses({ variant: 'secondary', size: 'lg' })}
+              >
+                Book a visit
+              </NextLink>
+            </div>
+          </div>
+
+          <ul
+            aria-label="At a glance"
+            className="flex flex-wrap gap-x-6 gap-y-3 text-small text-fg-muted lg:col-span-4 lg:col-start-9 lg:flex-col lg:justify-self-end xl:flex-row xl:border-t xl:border-border xl:pt-6"
+          >
+            <li className="inline-flex">
+              <OpenStatus hours={hours} />
+            </li>
+            {from ? (
+              <Fact icon={<Tag aria-hidden="true" className={ICON} strokeWidth={1.5} />}>
+                <span aria-hidden="true">
+                  From{' '}
+                  <span className="text-fg lining-nums tabular-nums">
+                    <span className="currency-symbol">৳</span>
+                    {formatBdt(from.amountBdt).replace('৳', '')}
+                  </span>
+                  /{rateUnitLabel(from, 'short')}
                 </span>
-                /{rateUnitLabel(from, 'short')}
-              </span>
-              <span className="sr-only">
-                From {formatBdt(from.amountBdt).replace('৳', '')} taka per {rateUnitLabel(from)}
-              </span>
-            </Fact>
-          ) : null}
-          {openDays.map((row) => (
-            <Fact
-              key={row.days}
-              icon={<Clock aria-hidden="true" className={ICON} strokeWidth={1.5} />}
-            >
-              <span aria-hidden="true">
-                {row.days} <span className="tabular-nums">{row.time}</span>
-              </span>
-              <span className="sr-only">
-                Open {row.daysLong}, {row.time}
-              </span>
-            </Fact>
-          ))}
-        </ul>
+                <span className="sr-only">
+                  From {formatBdt(from.amountBdt).replace('৳', '')} taka per {rateUnitLabel(from)}
+                </span>
+              </Fact>
+            ) : null}
+            {openDays.map((row) => (
+              <Fact
+                key={row.days}
+                icon={<Clock aria-hidden="true" className={ICON} strokeWidth={1.5} />}
+              >
+                <span aria-hidden="true">
+                  {row.days} <span className="tabular-nums">{row.time}</span>
+                </span>
+                <span className="sr-only">
+                  Open {row.daysLong}, {row.time}
+                </span>
+              </Fact>
+            ))}
+          </ul>
+        </div>
       </div>
 
       <HeroImage className="mt-12 lg:mt-16" />

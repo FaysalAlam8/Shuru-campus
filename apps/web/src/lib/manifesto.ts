@@ -1,5 +1,7 @@
 import { type Brand } from '@campus/contracts';
 
+import { type MediaSource } from '@/lib/hero-media';
+
 /**
  * What each pillar means here, finishing a sentence the pillar starts ("Empower your
  * business…"). Drawn from the About copy (docs/02-content.md → About copy). Keyed by the
@@ -34,3 +36,15 @@ export function manifestoStatements(pillars: Brand['pillars']): ManifestoStateme
     return rest ? [{ pillar: pillar.trim(), rest }] : [];
   });
 }
+
+/**
+ * The quiet desk beside the manifesto (B4): square, from `lg` only, where the statements leave the
+ * title column empty. A stock stand-in from `scripts/fetch-photos.mjs`.
+ * TODO(client): real photos and usage rights (docs/09-roadmap.md #3); swap the file and alt here.
+ */
+export const MANIFESTO_MEDIA = {
+  alt: 'Placeholder photo: a quiet desk by a curtained window',
+  src: '/placeholder/workspace-2.jpg',
+  width: 1200,
+  height: 1500,
+} as const satisfies MediaSource & { alt: string };
