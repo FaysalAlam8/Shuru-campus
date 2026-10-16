@@ -39,7 +39,7 @@ Story ("We are dreamers…") beside an editorial photo, the meaning of the name 
 
 ## Gallery `/gallery`
 
-A masonry grid (CSS columns; no JS layout), filter chips (*All · Workspace · Meeting rooms · Café · Events*, synced to `?category=`; without JS they submit a GET form) with a `layout` re-flow animation, a polite live summary ("Showing 3 photos of the café."), and a lightbox (keyboard, swipe, counter, captions, focus restore). Each photo links to its full-size file, so without JS it still opens large. An empty category says "Nothing in *Events* yet. Try *Workspace*." with a button to it. Images are lazy below the fold. With `features.gallery` off the page is a 404.
+A grid of rows that always end flush (`arrangeGallery()`, worked out in render; no JS layout): from `lg`, pairs (a portrait at 4:5 beside a wide shot over two columns) alternate with triples; at two columns, 4:3 tiles with an odd last photo across both; on phones, photos whole. Thumbnails crop to their tile, and the lightbox shows them uncropped. Filter chips (*All · Workspace · Meeting rooms · Café · Events*, synced to `?category=`; without JS they submit a GET form) with a `layout` re-flow animation, a polite live summary ("Showing 3 photos of the café."), and a lightbox (keyboard, swipe, counter, captions, focus restore). Each photo links to its full-size file, so without JS it still opens large. An empty category says "Nothing in *Events* yet. Try *Workspace*." with a button to it. Images are lazy below the fold. With `features.gallery` off the page is a 404.
 
 ## Contact `/contact`
 

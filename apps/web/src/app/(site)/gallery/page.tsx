@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 /**
  * Gallery (docs/05-pages-and-interactions.md → Gallery): the intro, then every photo as a
- * masonry, filtered by chips. The page reads `?category=` on the server, so a shared or no-JS
+ * grid of flush rows, filtered by chips. The page reads `?category=` on the server, so a shared or no-JS
  * filtered link arrives already filtered; after that the filter runs in the browser. With
  * `features.gallery` off the page doesn't exist (404), like its nav link.
  */
