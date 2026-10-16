@@ -1,5 +1,6 @@
 import Image from 'next/image';
 
+import { PageIntro } from '@/components/sections/page-intro';
 import { Link } from '@/components/ui/link';
 import { ABOUT_STORY_MEDIA } from '@/lib/about-media';
 
@@ -22,17 +23,15 @@ const SIZES = '(min-width: 100rem) 47rem, (min-width: 64rem) 55vw, 90vw';
 export function AboutStory({ shortName }: AboutStoryProps) {
   return (
     <div className="mx-auto max-w-content pt-8 px-page-safe pb-section sm:pt-12 lg:pt-16">
-      <header className="max-w-3xl">
-        <p className="type-eyebrow text-fg-subtle">About</p>
-        {/* 20ch: the display measure (B1). */}
-        <h1 className="mt-4 max-w-[20ch] type-h1 text-balance text-fg">
-          We are <em>dreamers</em>.
-        </h1>
-        <p className="mt-4 max-w-xl type-lead text-pretty text-fg-muted">
-          We use imagination and creativity to make the journey of a business, or an entrepreneur, a
-          little simpler.
-        </p>
-      </header>
+      <PageIntro
+        eyebrow="About"
+        title={
+          <>
+            We are <em>dreamers</em>.
+          </>
+        }
+        lead="We use imagination and creativity to make the journey of a business, or an entrepreneur, a little simpler."
+      />
 
       <section
         aria-labelledby={TITLE_ID}

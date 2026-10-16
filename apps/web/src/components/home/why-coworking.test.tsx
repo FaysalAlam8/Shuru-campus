@@ -26,4 +26,12 @@ describe('WhyCoworking', () => {
       expect(column).toHaveTextContent(explainer.here);
     }
   });
+
+  it('leads on to the spaces', () => {
+    render(<WhyCoworking />);
+    expect(screen.getByRole('link', { name: 'Find your space' })).toHaveAttribute(
+      'href',
+      '/spaces',
+    );
+  });
 });

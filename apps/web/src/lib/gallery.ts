@@ -58,3 +58,89 @@ export function gallerySummary(category: GalleryCategory | undefined, matching: 
   if (matching === 1) return `Showing the one photo ${subject}.`;
   return `Showing ${String(matching)} photos ${subject}.`;
 }
+
+/**
+ * How a photo sits in the three-column grid (from `lg`): in a pair row, the narrower photo is
+ * `tall` (one column, 4:5) beside the wider one, `wide` (two columns, the row's height); a triple
+ * row is three `cell`s (4:3), or `square`s when it holds a portrait; a lone photo is `full`.
+ */
+export type GalleryTileShape = 'full' | 'tall' | 'wide' | 'cell' | 'square';
+
+export interface GalleryTile {
+  image: GalleryImage;
+  shape: GalleryTileShape;
+  /** At two columns (`sm` to `lg`), spans both: the odd one out at the end. */
+  spansPair: boolean;
+}
+
+const aspect = (image: GalleryImage) => image.width / image.height;
+
+/**
+ * Lays the photos out in rows that always end flush, so the grid never leaves a gap: at three
+ * columns every row is a pair (tall + wide) or a triple, with as many pairs as there are
+ * portraits, as far as the count allows (pairs × 2 + triples × 3 = photos). Pair rows take the
+ * narrowest and widest photos left, so portraits stand tall and wide shots stay wide; triples
+ * take the rest in their own order. Pair and triple rows alternate, and pairs swap sides.
+ * The returned order is the display order (and the lightbox's).
+ */
+export function arrangeGallery(images: readonly GalleryImage[]): GalleryTile[] {
+  const count = images.length;
+  const [first] = images;
+  if (!first) return [];
+  if (count === 1) return [{ image: first, shape: 'full', spansPair: true }];
+
+  const portraits = images.filter((image) => aspect(image) < 1).length;
+  // The fewest pairs that leave a multiple of three, then three more at a time while that gets
+  // closer to one pair per portrait.
+  let pairs = (2 * count) % 3;
+  while (
+    2 * (pairs + 3) <= count &&
+    Math.abs(pairs + 3 - portraits) < Math.abs(pairs - portraits)
+  ) {
+    pairs += 3;
+  }
+  let triples = (count - 2 * pairs) / 3;
+
+  const left = [...images];
+  const take = (pick: (a: GalleryImage, b: GalleryImage) => boolean): GalleryImage => {
+    let best = 0;
+    left.forEach((image, i) => {
+      const current = left[best];
+      if (current && pick(image, current)) best = i;
+    });
+    const [image] = left.splice(best, 1);
+    if (!image) throw new Error('arrangeGallery ran out of photos');
+    return image;
+  };
+
+  const rows: Omit<GalleryTile, 'spansPair'>[][] = [];
+  const pairRows: GalleryImage[][] = [];
+  for (let i = 0; i < pairs; i++) {
+    const tall = take((a, b) => aspect(a) < aspect(b));
+    const wide = take((a, b) => aspect(a) > aspect(b));
+    pairRows.push([tall, wide]);
+  }
+  let pairIndex = 0;
+  while (pairIndex < pairRows.length || triples > 0) {
+    const pair = pairRows[pairIndex];
+    if (pair) {
+      const [tall, wide] = pair as [GalleryImage, GalleryImage];
+      const row = [
+        { image: tall, shape: 'tall' as const },
+        { image: wide, shape: 'wide' as const },
+      ];
+      rows.push(pairIndex % 2 === 0 ? row : row.reverse());
+      pairIndex++;
+    }
+    if (triples > 0) {
+      const row = left.splice(0, 3);
+      const shape = row.some((image) => aspect(image) < 1) ? 'square' : 'cell';
+      rows.push(row.map((image) => ({ image, shape })));
+      triples--;
+    }
+  }
+
+  return rows
+    .flat()
+    .map((tile, i, all) => ({ ...tile, spansPair: count % 2 === 1 && i === all.length - 1 }));
+}

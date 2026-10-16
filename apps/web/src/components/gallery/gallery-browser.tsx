@@ -12,19 +12,42 @@ import { type GalleryCategory, type GalleryImage } from '@campus/contracts';
 import { buttonClasses } from '@/components/ui/button-classes';
 import { Chip } from '@/components/ui/chip';
 import {
+  arrangeGallery,
   CATEGORY_PARAM,
   categoryInfo,
   filterGallery,
   GALLERY_FILTERS,
   gallerySummary,
   suggestCategory,
+  type GalleryTile,
+  type GalleryTileShape,
 } from '@/lib/gallery';
 import { useHydrated } from '@/lib/hooks/use-hydrated';
 import { useReducedMotion } from '@/lib/hooks/use-media-query';
 import { ease, seconds } from '@/styles/motion';
 
 // One column on phones, two from `sm`, three from `lg` (inside the 90rem container less its margins).
-const SIZES = '(min-width: 90rem) 26rem, (min-width: 64rem) 30vw, (min-width: 40rem) 46vw, 92vw';
+const LG_SIZES: Record<GalleryTileShape, string> = {
+  full: '(min-width: 90rem) 80rem, (min-width: 64rem) 90vw',
+  tall: '(min-width: 90rem) 26rem, (min-width: 64rem) 30vw',
+  wide: '(min-width: 90rem) 54rem, (min-width: 64rem) 60vw',
+  cell: '(min-width: 90rem) 26rem, (min-width: 64rem) 30vw',
+  square: '(min-width: 90rem) 26rem, (min-width: 64rem) 30vw',
+};
+const sizes = ({ shape, spansPair }: GalleryTile) =>
+  `${LG_SIZES[shape]}, (min-width: 40rem) ${spansPair ? '90vw' : '46vw'}, 92vw`;
+
+// From `sm` each tile is a fixed-ratio frame the photo covers (`arrangeGallery` makes every row
+// end flush); `wide` takes its height from the `tall` photo beside it. Phones show photos whole.
+const LG_TILE: Record<GalleryTileShape, string> = {
+  full: 'lg:col-span-3 lg:aspect-video',
+  tall: 'lg:col-span-1 lg:aspect-4/5',
+  wide: 'lg:col-span-2 lg:aspect-auto',
+  cell: 'lg:col-span-1 lg:aspect-4/3',
+  square: 'lg:col-span-1 lg:aspect-square',
+};
+const tileClasses = ({ shape, spansPair }: GalleryTile) =>
+  `relative ${spansPair ? 'sm:col-span-2 sm:aspect-video' : 'sm:aspect-4/3'} ${LG_TILE[shape]}`;
 /** Photos that load straight away: the top of every column at three columns, give or take. */
 const EAGER = 4;
 
@@ -49,8 +72,9 @@ export interface GalleryBrowserProps {
  * The Gallery's chips and photos (docs/05-pages-and-interactions.md → Gallery). The chips are
  * submit buttons of a GET form, so without JS a chip reloads the page filtered by `?category=`;
  * with JS it filters in place, replaces `?category=` (no new history entry) and says what's
- * showing in a polite live region. The photos are a CSS-columns masonry (no JS layout) at their
- * own ratios; on a change, leaving photos fade out and the rest glide to their new places
+ * showing in a polite live region. The photos are a grid of rows that always end flush
+ * (`arrangeGallery`, worked out in render, so no JS layout): whole on phones, cropped to their
+ * tile from `sm`; on a change, leaving photos fade out and the rest glide to their new places
  * (`layout`, transform only). Reduced motion keeps the fades, shortened, and drops the glide.
  * Each photo links to its full-size file, so without JS (or in a new tab) it still opens large;
  * a plain click opens the lightbox on it instead, over the photos the filter shows.
@@ -64,7 +88,8 @@ export function GalleryBrowser({ images, initialCategory, action }: GalleryBrows
   // The photo the lightbox is open on, by id; null while closed.
   const [viewing, setViewing] = useState<string | null>(null);
   const thumbnails = useRef(new Map<string, HTMLAnchorElement>());
-  const shown = filterGallery(images, category);
+  const tiles = arrangeGallery(filterGallery(images, category));
+  const shown = tiles.map((tile) => tile.image);
   const viewingIndex = viewing ? shown.findIndex((image) => image.id === viewing) : -1;
 
   const view = (id: string) => (event: MouseEvent<HTMLAnchorElement>) => {
@@ -126,54 +151,60 @@ export function GalleryBrowser({ images, initialCategory, action }: GalleryBrows
 
       {shown.length > 0 ? (
         // `relative`: leaving photos are lifted out of the flow (popLayout) and placed against it.
-        <ul className="relative mt-4 columns-1 gap-gutter sm:columns-2 lg:columns-3">
+        <ul className="relative mt-4 grid gap-gutter sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode="popLayout" initial={false}>
-            {shown.map((image, index) => (
-              <m.li
-                key={image.id}
-                layout={!reduced}
-                initial={{ opacity: 0, scale: reduced ? 1 : 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{
-                  opacity: 0,
-                  scale: reduced ? 1 : 0.96,
-                  // Exits are quicker than entrances (04 §6).
-                  transition: { duration: seconds(reduced ? 'crossfade' : 'fast'), ease: ease.in },
-                }}
-                transition={{ ...fade, layout: { duration: seconds('base'), ease: ease.out } }}
-                className="mb-gutter break-inside-avoid"
-              >
-                <a
-                  href={image.src}
-                  ref={(element) => {
-                    if (!element) return;
-                    thumbnails.current.set(image.id, element);
-                    return () => {
-                      thumbnails.current.delete(image.id);
-                    };
+            {tiles.map((tile, index) => {
+              const { image } = tile;
+              return (
+                <m.li
+                  key={image.id}
+                  layout={!reduced}
+                  initial={{ opacity: 0, scale: reduced ? 1 : 0.96 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{
+                    opacity: 0,
+                    scale: reduced ? 1 : 0.96,
+                    // Exits are quicker than entrances (04 §6).
+                    transition: {
+                      duration: seconds(reduced ? 'crossfade' : 'fast'),
+                      ease: ease.in,
+                    },
                   }}
-                  onClick={view(image.id)}
-                  onPointerEnter={prefetchLightbox}
-                  onFocus={prefetchLightbox}
-                  // Only once it opens a dialog; before hydration it's a plain link to the file.
-                  aria-haspopup={hydrated ? 'dialog' : undefined}
-                  className="block cursor-zoom-in rounded-sm"
+                  transition={{ ...fade, layout: { duration: seconds('base'), ease: ease.out } }}
+                  className={tileClasses(tile)}
                 >
-                  <Image
-                    src={image.src}
-                    width={image.width}
-                    height={image.height}
-                    alt={image.alt}
-                    sizes={SIZES}
-                    placeholder="blur"
-                    blurDataURL={image.blurDataUrl}
-                    loading={index < EAGER ? 'eager' : 'lazy'}
-                    fetchPriority={index === 0 ? 'high' : undefined}
-                    className="block h-auto w-full rounded-sm bg-bg-alt photo-tone"
-                  />
-                </a>
-              </m.li>
-            ))}
+                  <a
+                    href={image.src}
+                    ref={(element) => {
+                      if (!element) return;
+                      thumbnails.current.set(image.id, element);
+                      return () => {
+                        thumbnails.current.delete(image.id);
+                      };
+                    }}
+                    onClick={view(image.id)}
+                    onPointerEnter={prefetchLightbox}
+                    onFocus={prefetchLightbox}
+                    // Only once it opens a dialog; before hydration it's a plain link to the file.
+                    aria-haspopup={hydrated ? 'dialog' : undefined}
+                    className="block cursor-zoom-in rounded-sm sm:absolute sm:inset-0"
+                  >
+                    <Image
+                      src={image.src}
+                      width={image.width}
+                      height={image.height}
+                      alt={image.alt}
+                      sizes={sizes(tile)}
+                      placeholder="blur"
+                      blurDataURL={image.blurDataUrl}
+                      loading={index < EAGER ? 'eager' : 'lazy'}
+                      fetchPriority={index === 0 ? 'high' : undefined}
+                      className="block h-auto w-full rounded-sm bg-bg-alt object-cover photo-tone sm:h-full"
+                    />
+                  </a>
+                </m.li>
+              );
+            })}
           </AnimatePresence>
         </ul>
       ) : category ? (

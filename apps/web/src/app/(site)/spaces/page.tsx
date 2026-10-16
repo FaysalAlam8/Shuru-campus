@@ -1,3 +1,4 @@
+import { PageIntro } from '@/components/sections/page-intro';
 import { PlansNotice } from '@/components/sections/plans-notice';
 import { ComparisonSection } from '@/components/spaces/comparison-section';
 import { FaqSection } from '@/components/spaces/faq-section';
@@ -65,15 +66,16 @@ export default async function SpacesPage({ searchParams }: PageProps<'/spaces'>)
       <PeriodScope initialPeriod={period} key={period ?? 'all'}>
         <section aria-labelledby={TITLE_ID}>
           <div className="mx-auto max-w-content pt-12 px-page-safe sm:pt-16 lg:pt-24">
-            <p className="type-eyebrow text-fg-subtle">Spaces & pricing</p>
-            {/* 20ch: the display measure (B1). */}
-            <h1 id={TITLE_ID} className="mt-4 max-w-[20ch] type-h1 text-balance text-fg">
-              Pay for the space you <em>use</em>.
-            </h1>
-            <p className="mt-6 max-w-2xl type-lead text-pretty text-fg-muted">
-              Hot desks by the hour, your own seat by the week or month, offices for your team and
-              rooms for the meetings in between. Prices are in taka.
-            </p>
+            <PageIntro
+              eyebrow="Spaces & pricing"
+              titleId={TITLE_ID}
+              title={
+                <>
+                  Pay for the space you <em>use</em>.
+                </>
+              }
+              lead="Hot desks by the hour, your own seat by the week or month, offices for your team and rooms for the meetings in between. Prices are in taka."
+            />
 
             {sorted.length > 0 ? (
               <div id={PRICING_ID} className="mt-10 flex flex-col gap-8 lg:mt-14">

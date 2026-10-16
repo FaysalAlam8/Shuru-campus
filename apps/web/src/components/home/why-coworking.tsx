@@ -21,17 +21,23 @@ export function WhyCoworking({ number }: WhyCoworkingProps) {
       aria-labelledby={TITLE_ID}
       className="mx-auto grid max-w-content gap-12 py-section px-page-safe lg:grid-cols-12 lg:gap-gutter"
     >
-      <SectionHeading
-        id={TITLE_ID}
-        number={number}
-        eyebrow="Why co-working"
-        title={
-          <>
-            Why <em>share</em> a workspace?
-          </>
-        }
-        className="lg:col-span-4"
-      />
+      {/* From `lg` the title column stays in view under the header while the quotes scroll past. */}
+      <div className="flex flex-col lg:sticky lg:top-(--sticky-top) lg:col-span-4 lg:self-start">
+        <SectionHeading
+          id={TITLE_ID}
+          number={number}
+          eyebrow="Why co-working"
+          title={
+            <>
+              Why <em>share</em> a workspace?
+            </>
+          }
+          lead="Two simple ideas sit behind every desk and room here."
+        />
+        <Link href="/spaces" variant="standalone" className="mt-8 min-h-hit self-start">
+          Find your space
+        </Link>
+      </div>
 
       <div className="grid gap-12 md:grid-cols-2 md:gap-gutter lg:col-span-8">
         {EXPLAINERS.map((explainer, i) => (

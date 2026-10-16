@@ -14,6 +14,11 @@ describe('Manifesto', () => {
     );
   });
 
+  it('closes the title column with the sub-tagline, as a sentence', () => {
+    render(<Manifesto pillars={defaultBrand.pillars} subTagline={defaultBrand.subTagline} />);
+    expect(screen.getByText(`${defaultBrand.subTagline}.`)).toBeInTheDocument();
+  });
+
   it('opens each statement with its pillar', () => {
     render(<Manifesto pillars={defaultBrand.pillars} />);
     for (const pillar of defaultBrand.pillars) {
