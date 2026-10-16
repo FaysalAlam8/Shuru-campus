@@ -19,13 +19,17 @@ export interface PlanFinderSectionProps {
 
 const TITLE_ID = 'plan-finder-title';
 
-/** Home #4 (docs/05-pages-and-interactions.md): three questions that suggest a plan. */
+/**
+ * Home #4 (docs/05-pages-and-interactions.md): three questions that suggest a plan. It only ever
+ * follows Spaces, on the same background, so it has no top padding: Spaces' bottom padding is the
+ * one section gap between them, not two stacked.
+ */
 export function PlanFinderSection({ plans, number }: PlanFinderSectionProps) {
   return (
     <section
       id="plan-finder"
       aria-labelledby={TITLE_ID}
-      className="mx-auto max-w-content py-section px-page-safe"
+      className="mx-auto max-w-content px-page-safe pb-section"
     >
       <SectionHeading
         id={TITLE_ID}
