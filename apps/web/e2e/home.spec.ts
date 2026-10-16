@@ -77,7 +77,7 @@ test.describe('Home', () => {
 
   test('loads the hero photo', async ({ page }) => {
     await page.goto('/');
-    const photo = page.getByRole('img', { name: /^Placeholder photo: a sunlit/ });
+    const photo = page.getByRole('img', { name: /^Placeholder photo: people working/ });
 
     await expect(photo).toBeVisible();
     await expect
@@ -295,7 +295,9 @@ test.describe('Home', () => {
       // The first word stays; the pause button keeps its place but isn't offered.
       await expect(page.locator('[data-word-slot="current"]')).toHaveText('startup');
       await expect(page.getByRole('button', { name: 'Pause changing word' })).toHaveCount(0);
-      await expect(page.getByRole('img', { name: /^Placeholder photo: a sunlit/ })).toBeVisible();
+      await expect(
+        page.getByRole('img', { name: /^Placeholder photo: people working/ }),
+      ).toBeVisible();
       for (const pillar of defaultBrand.pillars) {
         await expect(page.locator('p').filter({ hasText: `${pillar} your ` })).toBeVisible();
       }
