@@ -13,7 +13,17 @@ describe('PillarsSection', () => {
     expect(
       items.map((item) => within(item).getByRole('heading', { level: 3 }).textContent),
     ).toEqual(defaultBrand.pillars);
-    expect(items[0]).toHaveTextContent(/Empower your business/);
+    expect(items[0]).toHaveTextContent(/Empower your business with a head-start: a shared/);
+  });
+
+  it('sets only the keywords bold', () => {
+    render(<PillarsSection pillars={['Enrich']} subTagline={defaultBrand.subTagline} />);
+    const bold = [...screen.getByRole('listitem').querySelectorAll('strong')];
+    expect(bold.map((b) => b.textContent)).toEqual([
+      'businesses',
+      'entrepreneurs',
+      'independent professionals',
+    ]);
   });
 
   it('leads with the sub-tagline as a sentence', () => {

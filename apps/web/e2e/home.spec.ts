@@ -10,22 +10,23 @@ const MD = 768;
 test.describe('Home', () => {
   test('leads with the headline, the ways in and the facts', async ({ page }) => {
     await page.goto('/');
-    const main = page.getByRole('main');
+    // The hero only: "Why co-working" further down offers "Find your space" too.
+    const hero = page.getByRole('main').getByRole('region', { name: 'Your startup begins here.' });
 
     await expect(page).toHaveTitle(`${defaultBrand.name} · ${defaultBrand.tagline}`);
-    await expect(main.getByRole('heading', { level: 1 })).toHaveAccessibleName(
+    await expect(hero.getByRole('heading', { level: 1 })).toHaveAccessibleName(
       'Your startup begins here.',
     );
-    await expect(main.getByRole('link', { name: 'Find your space' })).toHaveAttribute(
+    await expect(hero.getByRole('link', { name: 'Find your space' })).toHaveAttribute(
       'href',
       '/spaces',
     );
-    await expect(main.getByRole('link', { name: 'Book a visit' })).toHaveAttribute(
+    await expect(hero.getByRole('link', { name: 'Book a visit' })).toHaveAttribute(
       'href',
       '/contact',
     );
 
-    const facts = main.getByRole('list', { name: 'At a glance' });
+    const facts = hero.getByRole('list', { name: 'At a glance' });
     await expect(facts.getByText(/^(Open now|Closed)/)).toBeVisible();
     await expect(facts).toContainText('From ৳100/hr');
     await expect(facts).toContainText('Sat–Thu 9:00–19:00');
@@ -76,7 +77,7 @@ test.describe('Home', () => {
 
   test('loads the hero photo', async ({ page }) => {
     await page.goto('/');
-    const photo = page.getByRole('img', { name: /^Placeholder photo: a sunlit/ });
+    const photo = page.getByRole('img', { name: /^Placeholder photo: people working/ });
 
     await expect(photo).toBeVisible();
     await expect
@@ -89,7 +90,10 @@ test.describe('Home', () => {
     const manifesto = page.getByRole('region', { name: defaultBrand.pillars.join(', ') });
 
     for (const pillar of defaultBrand.pillars) {
-      await manifesto.locator('p').filter({ hasText: pillar }).scrollIntoViewIfNeeded();
+      await manifesto
+        .locator('p')
+        .filter({ hasText: `${pillar} your ` })
+        .scrollIntoViewIfNeeded();
       await expect(manifesto.locator('p').filter({ hasText: `${pillar} your ` })).toBeVisible();
     }
   });
@@ -291,7 +295,9 @@ test.describe('Home', () => {
       // The first word stays; the pause button keeps its place but isn't offered.
       await expect(page.locator('[data-word-slot="current"]')).toHaveText('startup');
       await expect(page.getByRole('button', { name: 'Pause changing word' })).toHaveCount(0);
-      await expect(page.getByRole('img', { name: /^Placeholder photo: a sunlit/ })).toBeVisible();
+      await expect(
+        page.getByRole('img', { name: /^Placeholder photo: people working/ }),
+      ).toBeVisible();
       for (const pillar of defaultBrand.pillars) {
         await expect(page.locator('p').filter({ hasText: `${pillar} your ` })).toBeVisible();
       }

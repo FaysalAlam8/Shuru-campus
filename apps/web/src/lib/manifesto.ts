@@ -1,29 +1,33 @@
 import { type Brand } from '@campus/contracts';
 
 import { type MediaSource } from '@/lib/hero-media';
+import { keywordParts, type ScrollTextPart } from '@/lib/scroll-text';
 
 /**
  * What each pillar means here, finishing a sentence the pillar starts ("Empower your
  * business…"). Drawn from the About copy (docs/02-content.md → About copy). Keyed by the
  * pillar in lower case, so a renamed pillar simply has no statement until one is written.
+ * `**…**` marks the keywords, the only words set bold (`keywordParts`).
  */
 const STATEMENTS: Readonly<Record<string, string>> = {
   empower:
-    'your business with a head-start: a shared workspace and office services, without setting them up alone.',
-  enhance: 'your work in a professional, tranquil and buoyant atmosphere.',
-  enrich: 'your days alongside businesses, entrepreneurs and independent professionals.',
+    'your business with a **head-start**: a **shared workspace** and **office services**, without setting them up alone.',
+  enhance: 'your work in a **professional**, **tranquil** and **buoyant** atmosphere.',
+  enrich:
+    'your days alongside **businesses**, **entrepreneurs** and **independent professionals**.',
 };
 
 export interface ManifestoStatement {
   /** The pillar as the brand writes it ("Empower"). */
   pillar: string;
-  /** The rest of the sentence. */
-  rest: string;
+  /** The rest of the sentence, its keywords marked `strong`. */
+  rest: ScrollTextPart[];
 }
 
 /** The rest of a pillar's statement, or `undefined` when none is written for it. */
-export function pillarStatement(pillar: string): string | undefined {
-  return STATEMENTS[pillar.trim().toLowerCase()];
+export function pillarStatement(pillar: string): ScrollTextPart[] | undefined {
+  const copy = STATEMENTS[pillar.trim().toLowerCase()];
+  return copy === undefined ? undefined : keywordParts(copy);
 }
 
 /**

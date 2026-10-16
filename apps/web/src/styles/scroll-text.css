@@ -17,6 +17,11 @@
       animation-timeline: --scroll-text;
       animation-range: cover var(--word-from) cover var(--word-to);
     }
+
+    /* Keywords are there from the start, so a glance finds them before the rest brightens. */
+    .scroll-text-word:has(strong) {
+      animation: none;
+    }
   }
 }
 
