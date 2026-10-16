@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import { GALLERY_CATEGORIES, gallerySeed, type GalleryImage } from '@campus/contracts';
 
 import {
+  arrangeGallery,
   categoryInfo,
   filterGallery,
   GALLERY_FILTERS,
@@ -83,5 +84,63 @@ describe('gallerySummary', () => {
 
   it('says when a category is empty (B5)', () => {
     expect(gallerySummary('events', 0)).toBe('Nothing in Events yet.');
+  });
+});
+
+describe('arrangeGallery', () => {
+  // Columns each tile takes at three columns.
+  const SPAN = { full: 3, tall: 1, wide: 2, cell: 1, square: 1 } as const;
+  const photo = (id: string, width: number, height: number): GalleryImage => ({
+    ...gallerySeed[0]!,
+    id,
+    width,
+    height,
+  });
+
+  it('keeps every photo, once', () => {
+    const tiles = arrangeGallery(gallerySeed);
+    expect(tiles.map((tile) => tile.image.id).sort()).toEqual(
+      gallerySeed.map((image) => image.id).sort(),
+    );
+  });
+
+  it('ends every row flush at three columns, for any number of photos', () => {
+    for (let count = 1; count <= 16; count++) {
+      const images = Array.from({ length: count }, (_, i) =>
+        i % 3 === 0 ? photo(`p${String(i)}`, 4, 5) : photo(`l${String(i)}`, 16, 9),
+      );
+      const tiles = arrangeGallery(images);
+      expect(tiles).toHaveLength(count);
+      let used = 0;
+      for (const tile of tiles) {
+        // A wide tile never straddles the end of a row.
+        expect((used % 3) + SPAN[tile.shape]).toBeLessThanOrEqual(3);
+        used += SPAN[tile.shape];
+      }
+      expect(used % 3).toBe(0);
+    }
+  });
+
+  it('stands portraits tall beside the widest shots', () => {
+    const tiles = arrangeGallery(gallerySeed);
+    for (const tile of tiles.filter((t) => t.shape === 'wide')) {
+      expect(tile.image.width).toBeGreaterThan(tile.image.height);
+    }
+    expect(
+      tiles.filter((t) => t.shape === 'tall').every((t) => t.image.width < t.image.height),
+    ).toBe(true);
+  });
+
+  it('lets the odd one out span both columns at two columns', () => {
+    const odd = arrangeGallery(only('workspace'));
+    expect(odd.map((tile) => tile.spansPair)).toEqual([false, false, true]);
+    expect(arrangeGallery(gallerySeed).some((tile) => tile.spansPair)).toBe(false);
+  });
+
+  it('shows a lone photo full width, and nothing for no photos', () => {
+    expect(arrangeGallery([gallerySeed[0]!])).toEqual([
+      { image: gallerySeed[0], shape: 'full', spansPair: true },
+    ]);
+    expect(arrangeGallery([])).toEqual([]);
   });
 });

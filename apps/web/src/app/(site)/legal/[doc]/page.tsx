@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { LegalContents } from '@/components/legal/legal-contents';
 import { LegalDocNav } from '@/components/legal/legal-doc-nav';
 import { LegalToc } from '@/components/legal/legal-toc';
+import { PageIntro } from '@/components/sections/page-intro';
 import { getBrand } from '@/lib/api';
 import { cn } from '@/lib/cn';
 import {
@@ -64,14 +65,12 @@ export default async function LegalPage({ params }: PageProps<'/legal/[doc]'>) {
       data-legal-doc=""
       className="mx-auto max-w-content pt-12 px-page-safe pb-section sm:pt-16 lg:pt-24"
     >
-      <header className="max-w-3xl">
-        <p className="type-eyebrow text-fg-subtle">Legal</p>
-        <h1 className="mt-4 type-h1 text-balance text-fg">{doc.title}</h1>
-        <p className="mt-6 text-small text-fg-muted">
+      <PageIntro eyebrow="Legal" title={doc.title}>
+        <p className="text-small text-fg-muted">
           Last updated <time dateTime={doc.updated}>{formatUpdated(doc.updated)}</time>
         </p>
-        <LegalDocNav current={doc.slug} className="mt-8" />
-      </header>
+        <LegalDocNav current={doc.slug} className="mt-6" />
+      </PageIntro>
 
       <div className="mt-10 grid gap-8 lg:mt-14 lg:grid-cols-12 lg:gap-gutter">
         {hasToc ? (

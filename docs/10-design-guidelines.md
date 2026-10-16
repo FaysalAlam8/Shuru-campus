@@ -230,7 +230,7 @@ Buttons, chips and the segmented control are pill-shaped (`radius-full`). Small 
 | Hero | 16:9 desktop / 4:5 mobile (art-directed with `<picture>`) | `radius-lg`, slow scale-in, scrim only if text overlaps |
 | Plan cards | 4:5 | `radius-md`, scale 1.03 on hover |
 | Feature / editorial | 3:2 | `radius-lg`, optional 2-image offset stack |
-| Gallery | Original ratio | Masonry, `radius-sm` |
+| Gallery | Original on phones; 4:5, 4:3, 1:1 or two-column tiles from `sm` (lightbox: original) | Flush rows, `radius-sm` |
 
 Subjects are real work moments, natural light and plants, with people from behind or in candid mid-task shots. Avoid stock clichés (handshakes, pointing at screens, staged high-fives).
 

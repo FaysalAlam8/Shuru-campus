@@ -6,20 +6,23 @@ Every page shares a **header** (logo, nav, `OpenStatus`, theme toggle, "Member l
 
 The header is transparent over the hero. On scroll it condenses (height 80→64px) and gains a translucent surface (`backdrop-filter`, solid fallback). It hides on scroll-down and shows on scroll-up, but never while focus is inside it.
 
+
+Inner pages (Spaces, About, Gallery, Contact, Legal) open with a shared intro (`<PageIntro>`): stacked below `lg`; from `lg` the eyebrow and `h1` take the left seven columns and the lead (or, on Legal, the date and policy links) the right five, level with the title's last line.
+
 ---
 
 ## Home `/`
 
 | # | Section | Content | Interaction |
 | --- | --- | --- | --- |
-| 1 | **Hero** | "Your *[startup]* begins here." / sub: "Shared workspace & beyond, in the heart of Gulshan." / CTAs: *Find your space* · *Book a visit* / meta row: `OpenStatus`, "From ৳100/hr", "Sat–Thu 9–7" | Word cycle with pause control, begin-line draw, hero image slow scale (1.05→1) |
-| 2 | **Manifesto** | "Empower · Enhance · Enrich": three short statements drawn from the About copy | Words fade from `fg-subtle` to `fg` as they scroll into view (scroll-linked; static under reduced motion) |
+| 1 | **Hero** | "Your *[startup]* begins here." / sub: "Shared workspace & beyond, in the heart of Gulshan." / CTAs: *Find your space* · *Book a visit* / meta row: `OpenStatus`, "From ৳100/hr", "Sat–Thu 9–7". From `xl` the sub, CTAs and meta row sit beside the headline, in the room its longest word reserves | Word cycle with pause control, begin-line draw, hero image slow scale (1.05→1) |
+| 2 | **Manifesto** | "Empower · Enhance · Enrich": three short statements drawn from the About copy; the title column adds `brand.subTagline` and, from `lg`, a photo, and stays in view while the statements scroll | Words fade from `fg-subtle` to `fg` as they scroll into view (scroll-linked; static under reduced motion) |
 | 3 | **Spaces** | 6 plan cards (Hot Desk → Seminar Room), each with audience, "from" price and 3 key features | Card hover lift + image reveal. Click → plan sheet (shared-element). Horizontal snap carousel below `md` with prev/next buttons. |
 | 4 | **Plan finder** | 3 questions: *Who's working?* (just me / 2–6 people / event group) · *How often?* (hours · days · weekly · monthly) · *Need?* (desk / private room / meeting) → recommended plan + price + CTA | `SegmentedControl` springs, the result card animates in with `layout`. Pure function `recommendPlan()` is unit-tested. |
 | 5 | **Amenities** | 11 amenities with icons | Bento grid on desktop; marquee row on mobile (drifts, swipeable, pausable; static under reduced motion) |
 | 6 | **A day at {shortName}** | 9:00 arrive & coffee · 10:00 deep work (Silent Room) · 13:00 lunch · 15:00 meeting room · 17:00 timeout zone · 19:00 close | On the lake band. Horizontal timeline (snap scroll, prev/next buttons until `xl`); while open, the begin line runs from opening to the **current Dhaka time** with a "Now" marker, moving each minute; the moment in reach is highlighted as the rail (or, from `xl`, the page) scrolls |
 | 7 | **Gallery teaser** | 5 photos in an asymmetric grid | Opens the lightbox |
-| 8 | **Why co-working** | Shared economy and co-working explainers (with citations) as two editorial columns | Pull-quote reveal |
+| 8 | **Why co-working** | Shared economy and co-working explainers (with citations) as two editorial columns, beside a title column (lead + "Find your space") that stays in view from `lg` | Pull-quote reveal |
 | 9 | **Visit us** | Map (static image + "Open in Google Maps" link; no heavy embed until click), address, hours table with today highlighted, phones, email | Click-to-call/copy email with a toast |
 | 10 | **CTA band** | "Ready when *you* are." + inquiry button, with a phone number as the alternative (a call button when the inquiry form is off). Not "Ready to begin?": the footer's "Let's begin." follows right below, and the brand thread is once per screen (B5). | Magnetic CTA |
 
@@ -39,7 +42,7 @@ Story ("We are dreamers…") beside an editorial photo, the meaning of the name 
 
 ## Gallery `/gallery`
 
-A masonry grid (CSS columns; no JS layout), filter chips (*All · Workspace · Meeting rooms · Café · Events*, synced to `?category=`; without JS they submit a GET form) with a `layout` re-flow animation, a polite live summary ("Showing 3 photos of the café."), and a lightbox (keyboard, swipe, counter, captions, focus restore). Each photo links to its full-size file, so without JS it still opens large. An empty category says "Nothing in *Events* yet. Try *Workspace*." with a button to it. Images are lazy below the fold. With `features.gallery` off the page is a 404.
+A grid of rows that always end flush (`arrangeGallery()`, worked out in render; no JS layout): from `lg`, pairs (a portrait at 4:5 beside a wide shot over two columns) alternate with triples; at two columns, 4:3 tiles with an odd last photo across both; on phones, photos whole. Thumbnails crop to their tile, and the lightbox shows them uncropped. Filter chips (*All · Workspace · Meeting rooms · Café · Events*, synced to `?category=`; without JS they submit a GET form) with a `layout` re-flow animation, a polite live summary ("Showing 3 photos of the café."), and a lightbox (keyboard, swipe, counter, captions, focus restore). Each photo links to its full-size file, so without JS it still opens large. An empty category says "Nothing in *Events* yet. Try *Workspace*." with a button to it. Images are lazy below the fold. With `features.gallery` off the page is a 404.
 
 ## Contact `/contact`
 
