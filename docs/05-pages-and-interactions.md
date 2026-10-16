@@ -6,6 +6,9 @@ Every page shares a **header** (logo, nav, `OpenStatus`, theme toggle, "Member l
 
 The header is transparent over the hero. On scroll it condenses (height 80→64px) and gains a translucent surface (`backdrop-filter`, solid fallback). It hides on scroll-down and shows on scroll-up, but never while focus is inside it.
 
+
+Inner pages (Spaces, About, Gallery, Contact, Legal) open with a shared intro (`<PageIntro>`): stacked below `lg`; from `lg` the eyebrow and `h1` take the left seven columns and the lead (or, on Legal, the date and policy links) the right five, level with the title's last line.
+
 ---
 
 ## Home `/`

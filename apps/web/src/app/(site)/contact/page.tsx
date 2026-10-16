@@ -5,6 +5,7 @@ import { InquiryCard } from '@/components/contact/inquiry-card';
 import { InquiryPaused } from '@/components/contact/inquiry-paused';
 import { ContactDetails } from '@/components/sections/contact-details';
 import { MapCard } from '@/components/sections/map-card';
+import { PageIntro } from '@/components/sections/page-intro';
 import { JsonLd } from '@/components/seo/json-ld';
 import { getBrand, getPlans, getSiteSettings } from '@/lib/api';
 import { EMPTY_FORM_VALUES, initialInterest, interestGroups } from '@/lib/inquiry-form';
@@ -44,17 +45,15 @@ export default async function ContactPage({ searchParams }: PageProps<'/contact'
     <>
       <JsonLd data={localBusinessJsonLd(site)} />
       <div className="mx-auto max-w-content pt-8 px-page-safe pb-section sm:pt-12 lg:pt-16">
-        <header className="max-w-3xl">
-          <p className="type-eyebrow text-fg-subtle">Contact</p>
-          {/* 20ch: the display measure (B1). */}
-          <h1 className="mt-4 max-w-[20ch] type-h1 text-balance text-fg">
-            Tell us how you <em>work</em>.
-          </h1>
-          <p className="mt-4 max-w-xl type-lead text-pretty text-fg-muted">
-            A desk for the week, an office for the team, a room for an afternoon: tell us what you
-            need and we’ll suggest the right space.
-          </p>
-        </header>
+        <PageIntro
+          eyebrow="Contact"
+          title={
+            <>
+              Tell us how you <em>work</em>.
+            </>
+          }
+          lead="A desk for the week, an office for the team, a room for an afternoon: tell us what you need and we’ll suggest the right space."
+        />
 
         <div className="mt-10 grid gap-section lg:mt-14 lg:grid-cols-12 lg:gap-gutter">
           <div className="lg:col-span-7">

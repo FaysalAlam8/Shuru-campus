@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 
 import { GalleryBrowser } from '@/components/gallery/gallery-browser';
 import { GalleryNotice } from '@/components/gallery/gallery-notice';
+import { PageIntro } from '@/components/sections/page-intro';
 import { getBrand, getGallery, getSiteSettings } from '@/lib/api';
 import { CATEGORY_PARAM, parseCategory } from '@/lib/gallery';
 import { pageMetadata } from '@/lib/metadata';
@@ -34,16 +35,15 @@ export default async function GalleryPage({ searchParams }: PageProps<'/gallery'
 
   return (
     <div className="mx-auto max-w-content pt-12 px-page-safe pb-section sm:pt-16 lg:pt-24">
-      <header>
-        <p className="type-eyebrow text-fg-subtle">Gallery</p>
-        {/* 20ch: the display measure (B1). */}
-        <h1 className="mt-4 max-w-[20ch] type-h1 text-balance text-fg">
-          Take a look <em>around</em>.
-        </h1>
-        <p className="mt-6 max-w-2xl type-lead text-pretty text-fg-muted">
-          The desks, rooms and corners you’d work in, from the open workspace to the café counter.
-        </p>
-      </header>
+      <PageIntro
+        eyebrow="Gallery"
+        title={
+          <>
+            Take a look <em>around</em>.
+          </>
+        }
+        lead="The desks, rooms and corners you’d work in, from the open workspace to the café counter."
+      />
 
       <section id={PHOTOS_ID} aria-label="Photos" className="mt-10 lg:mt-14">
         {gallery.ok && gallery.data.length > 0 ? (
