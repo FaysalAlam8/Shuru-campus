@@ -24,7 +24,7 @@ describe('AmenitiesSection', () => {
 
   it('lists every amenity with its description in the bento', () => {
     render(<AmenitiesSection amenities={amenitiesSeed} />);
-    const tiles = within(bento()).getAllByRole('heading', { level: 3 });
+    const tiles = within(bento()).getAllByRole('listitem');
     expect(tiles).toHaveLength(amenitiesSeed.length);
     for (const amenity of amenitiesSeed) {
       const tile = within(bento()).getByRole('heading', { name: amenity.name }).closest('li');
@@ -32,33 +32,31 @@ describe('AmenitiesSection', () => {
     }
   });
 
-  it('gives every amenity one cell, leading with the first on the lake band', () => {
+  it('leads the bento with a 2×2 feature tile and closes its rows', () => {
     render(<AmenitiesSection amenities={amenitiesSeed} />);
     const [first, second] = within(bento()).getAllByRole('listitem');
-    expect(first).toHaveClass('surface-brand');
-    expect(second).not.toHaveClass('surface-brand');
-    for (const tile of within(bento()).getAllByRole('listitem').slice(0, amenitiesSeed.length)) {
-      expect(tile.className).not.toMatch(/col-span|row-span/);
-    }
+    expect(first).toHaveClass('md:col-span-2', 'md:row-span-2', 'lg:row-span-2');
+    expect(second).toHaveClass('lg:col-span-2');
   });
 
-  it('closes the last row with a link to every space, spanning the cells left', () => {
+  it('sets the feature tile on a decorative photo when it has one', () => {
     render(<AmenitiesSection amenities={amenitiesSeed} />);
-    const link = within(bento()).getByRole('link', { name: 'See every space' });
-    expect(link).toHaveAttribute('href', '/spaces');
-    // 11 amenities: one cell left of 3 columns, and one of 4.
-    expect(link.closest('li')).toHaveClass('md:col-span-1', '2xl:col-span-1');
+    const [first, second] = within(bento()).getAllByRole('listitem');
+    // `alt=""`: the tile's own name says what it is, so the photo stays out of the a11y tree.
+    expect(within(first!).queryByRole('img')).toBeNull();
+    expect(first?.querySelector('img[alt=""]')).toHaveAttribute(
+      'src',
+      expect.stringContaining('amenity-wifi'),
+    );
+    expect(second?.querySelector('img')).toBeNull();
   });
 
-  it('gives the link a whole row when the amenities fill theirs', () => {
-    // 12 amenities fill rows of 3 and of 4.
-    const twelve = [...amenitiesSeed, ...amenitiesSeed]
-      .slice(0, 12)
-      .map((amenity, i) => ({ ...amenity, id: `${amenity.id}-${String(i)}` }));
-    render(<AmenitiesSection amenities={twelve} />);
-    expect(
-      within(bento()).getByRole('link', { name: 'See every space' }).closest('li'),
-    ).toHaveClass('md:col-span-3', '2xl:col-span-4');
+  it('keeps the lake band for a feature without a photo', () => {
+    const [wifi, ...rest] = amenitiesSeed;
+    render(<AmenitiesSection amenities={[...rest, wifi!]} />);
+    const [first] = within(bento()).getAllByRole('listitem');
+    expect(first).toHaveClass('surface-brand');
+    expect(first?.querySelector('img')).toBeNull();
   });
 
   it('is a plain list of names in the SSR HTML on phones (the marquee only moves with JS)', () => {

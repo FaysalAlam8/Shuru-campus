@@ -145,6 +145,13 @@ export const PHOTOS = [
     title: 'A training session at a long table',
     ...fromPexels(1181406),
   },
+  // Home amenities: behind the 2×2 feature tile (apps/web/src/lib/amenity-media.ts), 3:2.
+  {
+    id: 'amenity-wifi',
+    size: LANDSCAPE,
+    title: 'A laptop and phone at a café table',
+    ...fromPexels(1181244),
+  },
   // Plan cards, 4:5 (apps/web/src/lib/plan-media.ts).
   {
     id: 'plan-hot-desk',
