@@ -177,6 +177,19 @@
   font-weight: 700;
   color: var(--color-accent-text);
 }
+/*
+ * The scrim under text set on a photo (B4: "scrim only if text overlaps"): ink rising from the
+ * foot, where the text sits, to clear by three quarters up. Strong enough at the text's height
+ * (70% ink a third of the way up) that `on-brand` text stays above AA over a white patch.
+ */
+@utility photo-scrim {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--palette-ink) 85%, transparent),
+    color-mix(in srgb, var(--palette-ink) 70%, transparent) 35%,
+    transparent 75%
+  );
+}
 @utility type-lead {
   font-size: var(--text-lead);
   line-height: var(--text-lead--line-height);
