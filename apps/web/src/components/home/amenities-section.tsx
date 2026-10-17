@@ -1,8 +1,11 @@
+import Image from 'next/image';
+
 import { type Amenity } from '@campus/contracts';
 
 import { Marquee } from '@/components/motion/marquee';
 import { SectionHeading } from '@/components/sections/section-heading';
 import { AmenityGlyph } from '@/lib/amenity-icons';
+import { AMENITY_FEATURE_MEDIA } from '@/lib/amenity-media';
 import { type BentoSpan, bentoSpans } from '@/lib/bento';
 import { cn } from '@/lib/cn';
 
@@ -22,6 +25,8 @@ const MD_SPAN: Record<BentoSpan, string> = {
   wide: 'md:col-span-2',
   single: '',
 };
+// The feature tile: two of three columns at `md`, two of four from `lg`.
+const FEATURE_SIZES = '(min-width: 100rem) 40rem, (min-width: 64rem) 45vw, 60vw';
 const LG_SPAN: Record<BentoSpan, string> = {
   feature: 'lg:col-span-2 lg:row-span-2',
   wide: 'lg:col-span-2',
@@ -94,18 +99,35 @@ export function AmenitiesSection({ amenities, number }: AmenitiesSectionProps) {
         >
           {amenities.map((amenity, i) => {
             const feature = md[i] === 'feature' || lg[i] === 'feature';
+            const photo = feature ? AMENITY_FEATURE_MEDIA[amenity.id] : undefined;
             return (
               <li
                 key={amenity.id}
                 className={cn(
                   'group/tile flex flex-col gap-8 rounded-md border p-6',
-                  feature
-                    ? 'border-transparent surface-brand dark:border-border'
-                    : 'border-border bg-surface',
+                  photo
+                    ? // No border: the photo would stop short of it, showing a hairline of fill.
+                      'relative isolate overflow-hidden border-0 bg-brand-surface text-on-brand'
+                    : feature
+                      ? 'border-transparent surface-brand dark:border-border'
+                      : 'border-border bg-surface',
                   MD_SPAN[md[i] ?? 'single'],
                   LG_SPAN[lg[i] ?? 'single'],
                 )}
               >
+                {photo ? (
+                  <>
+                    <Image
+                      src={photo.src}
+                      width={photo.width}
+                      height={photo.height}
+                      alt=""
+                      sizes={FEATURE_SIZES}
+                      className="absolute inset-0 -z-10 size-full object-cover photo-tone"
+                    />
+                    <div aria-hidden="true" className="absolute inset-0 -z-10 photo-scrim" />
+                  </>
+                ) : null}
                 <AmenityIcon icon={amenity.icon} inverse={feature} />
                 <div className="mt-auto">
                   <h3 className={feature ? 'type-h3' : 'font-medium text-fg'}>{amenity.name}</h3>
